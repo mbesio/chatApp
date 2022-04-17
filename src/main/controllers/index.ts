@@ -76,7 +76,7 @@ export const addUserToChat = async (userId, chatId) => {
   return updatedChat
 }
 
-export const getAllChatMessager = async (chatId) => {
+export const getAllChatMessages = async (chatId) => {
   const messages = await messageModel.findAll({where: {
     chatId
   }})
@@ -86,14 +86,14 @@ export const getAllChatMessager = async (chatId) => {
   return messages
 }
 
-export const addMessageToCgat = async (message, chatId, userId) => {
-  const updatedMessages = messageModel.create({
+export const addMessageToChat = async (message, chatId, userId) => {
+  const newMessage = messageModel.create({
     message,
     chatId,
     userId
   })
-  if (!updatedMessages) {
+  if (!newMessage) {
     return new Error('There was an error adding a new message to the chat')
   }
-  return updatedMessages
+  return newMessage
 }

@@ -27,8 +27,27 @@ const typeDefs = gql`
   type Query {
     users: [User]
     chats: [Chat]
-    messages: [Message]
     user(id: String!): User!
+    chat(id: String!): Chat!
+    chatMessages(chatId: String): [Message]
+  }
+
+  type Mutation {
+    createUser(input: UserInput!): User!
+    addUserToChat(userId: String!, chatId: String!): Chat!
+    addMessageToChat(input: MessageInput!): Message!
+  }
+
+  input UserInput {
+    email: String
+    username:String
+    password: String
+  }
+
+  input MessageInput {
+    message: String
+    chatId: String,
+    userId: String
   }
 `
 

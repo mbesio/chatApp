@@ -6,7 +6,6 @@ const resolvers = {
   Query: {
     users: () => users,
     chats: () => chats,
-    messages: () => messages,
     user: async(_, {id}) => await getUserById(id)
   },
   User: {
