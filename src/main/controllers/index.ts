@@ -1,5 +1,5 @@
 import { userModel, chatModel, messageModel } from '../models'
-import { User } from '../models/types'
+import { Chat, User } from '../models/types'
 
 
 export const getAllUsers = async () => {
@@ -56,6 +56,17 @@ export const createUser = async (email, username, password) => {
     throw new Error('An error occured creating the user')
   }
   return newUser
+}
+
+export const createChat = async (name, users) => {
+  const newChat = await Chat.create({
+    name,
+    users,
+  })
+  if (!newChat) {
+    throw new Error('An error occured creating the chat')
+  }
+  return newChat
 }
 
 // need to figure out ho to update the json blob here

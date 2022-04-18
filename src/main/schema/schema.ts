@@ -21,7 +21,7 @@ const typeDefs = gql`
     createdAt: Int
     chat: Chat
     message: String
-    Author: User
+    author: User
   }
 
   type Query {
@@ -34,6 +34,7 @@ const typeDefs = gql`
 
   type Mutation {
     createUser(input: UserInput!): User!
+    createChat(input: ChatInput!): Chat!
     addUserToChat(userId: String!, chatId: String!): Chat!
     addMessageToChat(input: MessageInput!): Message!
   }
@@ -42,6 +43,10 @@ const typeDefs = gql`
     email: String
     username:String
     password: String
+  }
+
+  input ChatInput {
+    name: String
   }
 
   input MessageInput {
