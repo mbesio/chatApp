@@ -38,7 +38,24 @@ const resolvers = {
         }
       })
     },
-    // createChat: async(_, {name, users}) => await createChat(name, users),
+    createChat: async(_, { input }, context: Context) => {
+      console.log('input ', input)
+      const { name } = input
+      const chatExists = await context.prisma.chats.count({
+        where: {
+          name: name
+        }
+      }) > 0
+      console.log('chatExists ', chatExists)
+      if (chatExists) {
+        throw new Error('Chat name already exists!')
+      }
+      return await context.prisma.chats.create({
+        data: {
+          name: name
+        }
+      })
+    }
     // createChat: async(_, {name, users}) => await createChat(name, users),
     // addUserToChat: async(_, {userId, chatId}) => await addUserToChat(userId, chatId),
     // addMessageToChat: async(_, {message, chatId, userId}) => await addMessageToChat(message, chatId, userId)

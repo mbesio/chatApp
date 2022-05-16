@@ -9,9 +9,8 @@ datasource db {
 
 model Chats {
   id           Int            @id @default(autoincrement())
-  name         String         @db.VarChar(255)
+  name         String         @db.VarChar(50)
   createdAt    DateTime       @default(now()) @db.Timestamp(0)
-  users        Json
   Messages     Messages[]
   UsersOnChats UsersOnChats[]
 }
@@ -31,9 +30,9 @@ model Messages {
 
 model Users {
   id           Int            @id @default(autoincrement())
-  username     String         @db.VarChar(255)
-  email        String         @db.VarChar(255)
-  password     String         @db.VarChar(255)
+  username     String         @db.VarChar(20)
+  email        String         @db.VarChar(320)
+  password     String         @db.VarChar(20)
   Messages     Messages[]
   UsersOnChats UsersOnChats[]
 }
