@@ -21,9 +21,10 @@ const resolvers = {
   },
   Mutation: {
     createUser: async(_, { input }, context: Context) =>  {
+      const { username, email, password } = input
       const userExists = await context.prisma.users.count({
         where: {
-          username: input.username
+          username: username
         }
       }) > 0
       if (userExists) {
@@ -31,13 +32,13 @@ const resolvers = {
       }
       return await context.prisma.users.create({
         data: {
-          username: input.username,
-          email: input.email,
-          password: input.password
+          username: username,
+          email: email,
+          password: password
         }
       })
     },
-    // createUser: async(_, {email, username, password}) => await createUser(email, username, password),
+    // createChat: async(_, {name, users}) => await createChat(name, users),
     // createChat: async(_, {name, users}) => await createChat(name, users),
     // addUserToChat: async(_, {userId, chatId}) => await addUserToChat(userId, chatId),
     // addMessageToChat: async(_, {message, chatId, userId}) => await addMessageToChat(message, chatId, userId)
