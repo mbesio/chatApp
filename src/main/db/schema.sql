@@ -66,6 +66,11 @@ VALUES (2, 1);
 
 /*  Execute this file from the command line by typing:
  *    mysql -u root < src/main/db/schema.sql
- *  to create the database and the tables.*/
+ *  to create the database and the tables.
+
+ * npx prisma db pull - to introspect the db for prisma
+ * npx prisma generate - to generate the prisma client
+
+ */
 
 
