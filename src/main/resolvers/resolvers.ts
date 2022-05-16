@@ -5,8 +5,10 @@ import { Context } from '../index'
 
 const resolvers = {
   Query: {
-    users: async (__, _, context: Context) =>
-      await context.prisma.users.findMany()
+    users: async (_, __, context: Context) =>
+      await context.prisma.users.findMany(),
+    chats: async (_, __, context: Context) =>
+      await context.prisma.chats.findMany()
     // [{
     //   id: '1',
     //   email: 'test@gmail.com',
@@ -18,6 +20,23 @@ const resolvers = {
     // chatMessages: async (_, {chatId}) => await getAllMessagesFromChat(chatId)
   },
   Mutation: {
+    createUser: async(_, { input }, context: Context) =>  {
+      const userExists = await context.prisma.users.count({
+        where: {
+          username: input.username
+        }
+      }) > 0
+      if (userExists) {
+        throw new Error('Username already exists!')
+      }
+      return await context.prisma.users.create({
+        data: {
+          username: input.username,
+          email: input.email,
+          password: input.password
+        }
+      })
+    },
     // createUser: async(_, {email, username, password}) => await createUser(email, username, password),
     // createChat: async(_, {name, users}) => await createChat(name, users),
     // addUserToChat: async(_, {userId, chatId}) => await addUserToChat(userId, chatId),
