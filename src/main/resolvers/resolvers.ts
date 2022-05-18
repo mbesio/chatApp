@@ -7,16 +7,20 @@ const resolvers = {
   Query: {
     users: async (_, __, context: Context) =>
       await context.prisma.users.findMany(),
+    user: async (_, { id }, context: Context) =>
+    await context.prisma.users.findUnique({
+      where: {
+        id: parseInt(id)
+      },
+    }),
     chats: async (_, __, context: Context) =>
-      await context.prisma.chats.findMany()
-    // [{
-    //   id: '1',
-    //   email: 'test@gmail.com',
-    //   username: 'test user'}]
-    // // users: async () => await getAllUsers(),
-    // user: async(_, {id}) => await getUserById(id),
-    // chats: async () => await getAllChats(),
-    // chat: async (_, {id}) => await getChatsById(id),
+      await context.prisma.chats.findMany(),
+    chat: async (_, { id }, context: Context) =>
+    await context.prisma.chats.findUnique({
+      where: {
+        id: parseInt(id)
+      },
+    }),
     // chatMessages: async (_, {chatId}) => await getAllMessagesFromChat(chatId)
   },
   Mutation: {
