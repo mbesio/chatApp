@@ -1,7 +1,4 @@
-// import { users, chats, messages } from '../mocks'
-// import { addMessageToChat, addUserToChat, createChat, createUser, getAllChats, getAllMessagesFromChat, getAllUsers, getChatsById, getUserById } from '../controllers'
 import { Context } from '../index'
-
 
 const resolvers = {
   Query: {
@@ -60,7 +57,6 @@ const resolvers = {
         }
       })
     }
-    // createChat: async(_, {name, users}) => await createChat(name, users),
     // addUserToChat: async(_, {userId, chatId}) => await addUserToChat(userId, chatId),
     // addMessageToChat: async(_, {message, chatId, userId}) => await addMessageToChat(message, chatId, userId)
   },
