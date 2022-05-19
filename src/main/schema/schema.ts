@@ -30,6 +30,7 @@ const typeDefs = gql`
     user(id: String!): User!
     chat(id: String!): Chat!
     chatMessages(chatId: String): [Message]
+    userChats(userId: String): [Chat]
   }
 
   type Mutation {

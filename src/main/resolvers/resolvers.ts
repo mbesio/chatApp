@@ -24,6 +24,23 @@ const resolvers = {
           chatId: parseInt(chatId)
         },
       }),
+    userChats: async (_, { userId }, context: Context) => {
+     const prismaChats =  await context.prisma.usersOnChats.findMany({
+        where: {
+          userId: parseInt(userId)
+        },
+      })
+      const chatIds = prismaChats.map(item => item.chatId)
+
+      return await Promise.all(chatIds.map(chatId =>
+        context.prisma.chats.findUnique({
+          where: {
+            id: chatId
+          },
+        })
+      ))
+    },
+
   },
   Mutation: {
     createUser: async(_, { input }, context: Context) =>  {
