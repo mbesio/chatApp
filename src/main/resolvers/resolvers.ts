@@ -1,3 +1,4 @@
+import e from 'cors'
 import { Context } from '../index'
 
 // eventually bring getUserById out to utils or controllers
@@ -106,19 +107,37 @@ const resolvers = {
     // username: (user) => user.username,
     // email: (user) => user.email,
     // password: (user) => user.password
+    chats: async (user, __, context: Context) => {
+      // console.log('hello from user.chats', user)
+      const prismaChats = await context.prisma.usersOnChats.findMany({
+        where: {
+          userId: user.id
+        }
+      })
+      const chatsId = prismaChats.map(chat => chat.chatId.toString())
+      return Promise.all(chatsId.map(chatId => getChatById(context, chatId)))
+    }
   },
   Chat: {
     // id: (chat) => chat.id,
     // name: (chat) => chat.name,
-    // users: async (chat) => {
-    //   return await chat.users.map(userId => getUserById(userId))
-    // }
+    users: async (chat, __, context: Context) => {
+     const prismaUsers = await context.prisma.usersOnChats.findMany({
+       where: {
+         chatId: chat.id
+       }
+     })
+     const usersId = prismaUsers.map(user => user.userId.toString())
+     return Promise.all(usersId.map(userId => getUserById(context, userId)))
+    },
   },
   Message: {
     // id: (message) => message.id,
     // message: (message) => message.message,
-    // chat: async (message) => await getChatsById(message.chatId),
-    // author: async (message) => await getUserById(message.userId),
+    chat: async (message, __, context: Context) =>
+      await getChatById(context, message.chatId),
+    author: async (message, __, context: Context) =>
+    await getUserById(context, message.fromUser),
   }
 }
 
