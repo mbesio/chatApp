@@ -1,13 +1,13 @@
 import { Context } from '../index'
 
-// eventually bring getUserById out to utils
+// eventually bring getUserById out to utils or controllers
 const getUserById = async (context: Context, id: string) => await context.prisma.users.findUnique({
   where: {
     id: parseInt(id)
   },
 })
 
-// eventually bring getChatById out to utils
+// eventually bring getChatById out to utils or controllers
 const getChatById = async (context: Context, id: string) => await context.prisma.chats.findUnique({
   where: {
     id: parseInt(id)
@@ -81,18 +81,25 @@ const resolvers = {
       })
     },
     addUserToChat: async(_, { userId, chatId }, context: Context) => {
-      console.log('hello there')
       const addedUserToChat = await context.prisma.usersOnChats.create({
         data: {
           chatId: parseInt(chatId),
           userId: parseInt(userId)
         }
       })
-      console.log('addedUserToChat ', addedUserToChat)
       const returnedChatId = addedUserToChat.chatId.toString()
       return await getChatById(context, returnedChatId)
     },
-    // addMessageToChat: async(_, {message, chatId, userId}) => await addMessageToChat(message, chatId, userId)
+    addMessageToChat: async(_, { input }, context: Context) => {
+      const { messageText, chatId, userId } = input
+      return await context.prisma.messages.create({
+        data: {
+          messageText: messageText,
+          chatId: parseInt(chatId),
+          fromUser: parseInt(userId)
+        }
+      })
+    }
   },
   User: {
     // id: (user) => user.id,

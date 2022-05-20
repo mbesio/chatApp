@@ -20,7 +20,7 @@ const typeDefs = gql`
     id: ID
     createdAt: String
     chat: Chat
-    message: String
+    messageText: String
     author: User
   }
 
@@ -51,7 +51,7 @@ const typeDefs = gql`
   }
 
   input MessageInput {
-    message: String
+    messageText: String
     chatId: String,
     userId: String
   }
