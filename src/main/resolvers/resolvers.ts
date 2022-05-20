@@ -1,20 +1,5 @@
-import e from 'cors'
 import { Context } from '../index'
-
-// eventually bring getUserById out to utils or controllers
-const getUserById = async (context: Context, id: string) => await context.prisma.users.findUnique({
-  where: {
-    id: parseInt(id)
-  },
-})
-
-// eventually bring getChatById out to utils or controllers
-const getChatById = async (context: Context, id: string) => await context.prisma.chats.findUnique({
-  where: {
-    id: parseInt(id)
-  },
-})
-
+import { getUserById, getChatById } from '../controllers'
 
 const resolvers = {
   Query: {
@@ -108,7 +93,6 @@ const resolvers = {
     // email: (user) => user.email,
     // password: (user) => user.password
     chats: async (user, __, context: Context) => {
-      // console.log('hello from user.chats', user)
       const prismaChats = await context.prisma.usersOnChats.findMany({
         where: {
           userId: user.id
