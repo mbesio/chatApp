@@ -1,5 +1,20 @@
 import { Context } from '../index'
 
+// eventually bring getUserById out to utils
+const getUserById = async (context: Context, id: string) => await context.prisma.users.findUnique({
+  where: {
+    id: parseInt(id)
+  },
+})
+
+// eventually bring getChatById out to utils
+const getChatById = async (context: Context, id: string) => await context.prisma.chats.findUnique({
+  where: {
+    id: parseInt(id)
+  },
+})
+
+
 const resolvers = {
   Query: {
     users: async (_, __, context: Context) =>
@@ -7,17 +22,9 @@ const resolvers = {
     chats: async (_, __, context: Context) =>
       await context.prisma.chats.findMany(),
     user: async (_, { id }, context: Context) =>
-      await context.prisma.users.findUnique({
-        where: {
-          id: parseInt(id)
-        },
-    }),
+      await getUserById(context, id),
     chat: async (_, { id }, context: Context) =>
-      await context.prisma.chats.findUnique({
-        where: {
-          id: parseInt(id)
-        },
-    }),
+      await getChatById(context, id),
     chatMessages: async (_, { chatId }, context: Context) =>
       await context.prisma.messages.findMany({
         where: {
@@ -30,14 +37,10 @@ const resolvers = {
           userId: parseInt(userId)
         },
       })
-      const chatIds = prismaChats.map(item => item.chatId)
+      const chatIds = prismaChats.map(item => item.chatId.toString())
 
       return await Promise.all(chatIds.map(chatId =>
-        context.prisma.chats.findUnique({
-          where: {
-            id: chatId
-          },
-        })
+        getChatById(context, chatId)
       ))
     },
 
@@ -62,14 +65,12 @@ const resolvers = {
       })
     },
     createChat: async(_, { input }, context: Context) => {
-      console.log('input ', input)
       const { name } = input
       const chatExists = await context.prisma.chats.count({
         where: {
           name: name
         }
       }) > 0
-      console.log('chatExists ', chatExists)
       if (chatExists) {
         throw new Error('Chat name already exists!')
       }
@@ -78,8 +79,19 @@ const resolvers = {
           name: name
         }
       })
-    }
-    // addUserToChat: async(_, {userId, chatId}) => await addUserToChat(userId, chatId),
+    },
+    addUserToChat: async(_, { userId, chatId }, context: Context) => {
+      console.log('hello there')
+      const addedUserToChat = await context.prisma.usersOnChats.create({
+        data: {
+          chatId: parseInt(chatId),
+          userId: parseInt(userId)
+        }
+      })
+      console.log('addedUserToChat ', addedUserToChat)
+      const returnedChatId = addedUserToChat.chatId.toString()
+      return await getChatById(context, returnedChatId)
+    },
     // addMessageToChat: async(_, {message, chatId, userId}) => await addMessageToChat(message, chatId, userId)
   },
   User: {
