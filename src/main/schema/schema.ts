@@ -12,15 +12,15 @@ const typeDefs = gql`
   type Chat {
     id: ID
     name: String
-    createdAt: Int
+    createdAt: String
     users: [User]
   }
 
   type Message {
     id: ID
-    createdAt: Int
+    createdAt: String
     chat: Chat
-    message: String
+    messageText: String
     author: User
   }
 
@@ -30,6 +30,7 @@ const typeDefs = gql`
     user(id: String!): User!
     chat(id: String!): Chat!
     chatMessages(chatId: String): [Message]
+    userChats(userId: String): [Chat]
   }
 
   type Mutation {
@@ -50,7 +51,7 @@ const typeDefs = gql`
   }
 
   input MessageInput {
-    message: String
+    messageText: String
     chatId: String,
     userId: String
   }

@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Chats {
+  id           Int            @id @default(autoincrement())
+  name         String         @db.VarChar(50)
+  createdAt    DateTime       @default(now()) @db.Timestamp(0)
+  Messages     Messages[]
+  UsersOnChats UsersOnChats[]
+}
+
+model Messages {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now()) @db.Timestamp(0)
+  messageText String   @db.VarChar(1000)
+  chatId      Int
+  fromUser    Int
+  Chats       Chats    @relation(fields: [chatId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "messages_ibfk_1")
+  Users       Users    @relation(fields: [fromUser], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "messages_ibfk_2")
+
+  @@index([chatId], map: "chatId")
+  @@index([fromUser], map: "fromUser")
+}
+
+model Users {
+  id           Int            @id @default(autoincrement())
+  username     String         @db.VarChar(20)
+  email        String         @db.VarChar(320)
+  password     String         @db.VarChar(20)
+  Messages     Messages[]
+  UsersOnChats UsersOnChats[]
+}
+
+model UsersOnChats {
+  userId   Int
+  chatId   Int
+  joinedAt DateTime  @default(now()) @db.Timestamp(0)
+  leftAt   DateTime? @db.Timestamp(0)
+  Chats    Chats     @relation(fields: [chatId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "usersonchats_ibfk_2")
+  Users    Users     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "usersonchats_ibfk_1")
+
+  @@unique([userId, chatId], map: "UsersOnChats_user_chat_unique")
+  @@index([chatId], map: "chatId")
+}
