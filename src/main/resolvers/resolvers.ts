@@ -55,6 +55,23 @@ const resolvers = {
         token: jwt.sign(newUser, process.env.JWT_SECRET)
       }
     },
+    loginUser: async(_, { input }, context: Context) => {
+      const { username, password } = input
+      const userLoggingIn = await context.prisma.users.findFirst({
+        where: {
+          username: username
+        }
+      })
+
+      if (!userLoggingIn) throw new Error('Unable to Login')
+
+      const isMatch = password === userLoggingIn.password
+      if (!isMatch) throw  new Error('Unable to Login')
+      return {
+        token: jwt.sign(userLoggingIn, process.env.JWT_SECRET)
+      }
+
+    },
     createChat: async(_, { input }, context: Context) => {
       const { name } = input
       const chatExists = await context.prisma.chats.count({
