@@ -1,5 +1,7 @@
+import jwt  from 'jsonwebtoken'
 import { Context } from '../index'
 import { getUserById, getChatById } from '../controllers'
+
 
 const resolvers = {
   Query: {
@@ -42,13 +44,16 @@ const resolvers = {
       if (userExists) {
         throw new Error('Username already exists!')
       }
-      return await context.prisma.users.create({
+      const newUser = await context.prisma.users.create({
         data: {
           username: username,
           email: email,
           password: password
         }
       })
+      return {
+        token: jwt.sign(newUser, process.env.JWT_SECRET)
+      }
     },
     createChat: async(_, { input }, context: Context) => {
       const { name } = input
