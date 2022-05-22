@@ -24,6 +24,10 @@ const typeDefs = gql`
     author: User
   }
 
+  type AuthPayLoad {
+    token: String!
+  }
+
   type Query {
     users: [User]
     chats: [Chat]
@@ -34,7 +38,8 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    createUser(input: UserInput!): User!
+    createUser(input: UserInput!): AuthPayLoad!
+    loginUser(input: UserLoginInput!): AuthPayLoad!
     createChat(input: ChatInput!): Chat!
     addUserToChat(userId: String!, chatId: String!): Chat!
     addMessageToChat(input: MessageInput!): Message!
@@ -42,6 +47,11 @@ const typeDefs = gql`
 
   input UserInput {
     email: String
+    username:String
+    password: String
+  }
+
+  input UserLoginInput {
     username:String
     password: String
   }

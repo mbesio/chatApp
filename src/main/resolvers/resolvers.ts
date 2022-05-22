@@ -1,10 +1,11 @@
+import jwt  from 'jsonwebtoken'
 import { Context } from '../index'
 import { getUserById, getChatById } from '../controllers'
 
 const resolvers = {
   Query: {
     users: async (_, __, context: Context) =>
-      await context.prisma.users.findMany(),
+    await context.prisma.users.findMany(),
     chats: async (_, __, context: Context) =>
       await context.prisma.chats.findMany(),
     user: async (_, { id }, context: Context) =>
@@ -42,13 +43,33 @@ const resolvers = {
       if (userExists) {
         throw new Error('Username already exists!')
       }
-      return await context.prisma.users.create({
+      const newUser = await context.prisma.users.create({
         data: {
           username: username,
           email: email,
           password: password
         }
       })
+      return {
+        token: jwt.sign(newUser, process.env.JWT_SECRET)
+      }
+    },
+    loginUser: async(_, { input }, context: Context) => {
+      const { username, password } = input
+      const userLoggingIn = await context.prisma.users.findFirst({
+        where: {
+          username: username
+        }
+      })
+
+      if (!userLoggingIn) throw new Error('Unable to Login')
+
+      const isMatch = password === userLoggingIn.password
+      if (!isMatch) throw  new Error('Unable to Login')
+      return {
+        token: jwt.sign(userLoggingIn, process.env.JWT_SECRET)
+      }
+
     },
     createChat: async(_, { input }, context: Context) => {
       const { name } = input

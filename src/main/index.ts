@@ -8,17 +8,16 @@ const prisma = new PrismaClient()
 
 export interface Context {
   prisma: PrismaClient
-
+  req: any // should try and make this a better type if possible
 }
-const context : Context = {
-  prisma: prisma,
-}
-
 
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context,
+  context: ({ req }) => ({
+    req,
+    prisma
+  }),
 })
 
 server.listen().then(({ url }) => {
