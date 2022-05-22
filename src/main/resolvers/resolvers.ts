@@ -6,7 +6,8 @@ import { decodedToken } from '../server/authenticate'
 const resolvers = {
   Query: {
     users: async (_, __, context: Context) => {
-      const decoded = decodedToken(context.req)
+      // const decoded = decodedToken(context.req)
+      console.log('context.user ', context.user)
       return await context.prisma.users.findMany()
     },
     chats: async (_, __, context: Context) =>
