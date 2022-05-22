@@ -1,12 +1,17 @@
 import jwt  from 'jsonwebtoken'
 import { Context } from '../index'
 import { getUserById, getChatById } from '../controllers'
-
+import { decodedToken } from '../server/authenticate'
 
 const resolvers = {
   Query: {
-    users: async (_, __, context: Context) =>
-      await context.prisma.users.findMany(),
+    users: async (_, __, context) =>
+      {
+        console.log('context.req ', context.req)
+        console.log('context ', context)
+        // const decoded = decodedToken(context.req)
+        return await context.prisma.users.findMany()
+      },
     chats: async (_, __, context: Context) =>
       await context.prisma.chats.findMany(),
     user: async (_, { id }, context: Context) =>
